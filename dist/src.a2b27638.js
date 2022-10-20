@@ -149,7 +149,7 @@ function initializeCode() {
       type: Phaser.AUTO,
       backgroundColor: "#112211",
       scale: {
-        mode: Phaser.scale.FIT,
+        mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
         width: 800,
         height: 1000
@@ -173,14 +173,77 @@ function initializeCode() {
     var _super = _createSuper(PlayGame);
     function PlayGame() {
       _classCallCheck(this, PlayGame);
-      return _super.call(this, "PlayGame");
+      return _super.apply(this, arguments);
     }
     _createClass(PlayGame, [{
       key: "preload",
-      value: function preload() {}
+      value: function preload() {
+        this.load.image("sky", "assets/sky.png");
+        this.load.image("ground", "assets/platform.png");
+        this.load.image("star", "assets/star.png");
+        this.load.spritesheet("dude", "assets/dude.png", {
+          frameWidth: 32,
+          frameHeight: 48
+        });
+      }
     }, {
       key: "create",
-      value: function create() {}
+      value: function create() {
+        this.groundGroup = this.physics.add.group({
+          immovable: true,
+          allowGravity: false
+        });
+        for (var i = 0; i < 20; i++) {
+          this.groundGroup.create(Phaser.Math.Between(0, game.config.width), Phaser.Math.Between(0, game.config.height), "ground");
+        }
+        this.dude = this.physics.add.sprite(game.config.width / 2, game.config.height / 2, "dude");
+        this.dude.body.gravity.y = gameOptions.dudeGravity;
+        this.physics.add.collider(this.dude, this.groundGroup);
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.anims.create({
+          key: "left",
+          frames: this.anims.generateFrameNumbers("dude", {
+            start: 0,
+            end: 3
+          }),
+          frameRate: 10,
+          repeat: -1
+        });
+        this.anims.create({
+          key: "turn",
+          frames: [{
+            key: "dude",
+            frame: 4
+          }],
+          frameRate: 10
+        });
+        this.anims.create({
+          key: "right",
+          frames: this.anims.generateFrameNumbers("dude", {
+            start: 5,
+            end: 8
+          }),
+          frameRate: 10,
+          repeat: -1
+        });
+      }
+    }, {
+      key: "update",
+      value: function update() {
+        if (this.cursors.left.isDown) {
+          this.dude.body.velocity.x = -gameOptions.dudeSpeed;
+          this.dude.anims.play("left", true);
+        } else if (this.cursors.right.isDown) {
+          this.dude.body.velocity.x = gameOptions.dudeSpeed;
+          this.dude.anims.play("right", true);
+        } else {
+          this.dude.body.velocity.x = 0;
+          this.dude.anims.play("turn", true);
+        }
+        if (this.cursors.up.isDown && this.dude.body.touching.down) {
+          this.dude.body.velocity.y = -gameOptions.dudeGravity / 1.6;
+        }
+      }
     }]);
     return PlayGame;
   }(Phaser.Scene);
