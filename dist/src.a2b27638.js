@@ -173,7 +173,7 @@ function initializeCode() {
     var _super = _createSuper(PlayGame);
     function PlayGame() {
       _classCallCheck(this, PlayGame);
-      return _super.apply(this, arguments);
+      return _super.call(this, "PlayGame");
     }
     _createClass(PlayGame, [{
       key: "preload",
@@ -200,32 +200,24 @@ function initializeCode() {
         this.dude.body.gravity.y = gameOptions.dudeGravity;
         this.physics.add.collider(this.dude, this.groundGroup);
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.anims.create({
+
+        /*      this.anims.create({
           key: "left",
-          frames: this.anims.generateFrameNumbers("dude", {
-            start: 0,
-            end: 3
-          }),
+          frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
           frameRate: 10,
-          repeat: -1
+          repeat: -1,
         });
         this.anims.create({
           key: "turn",
-          frames: [{
-            key: "dude",
-            frame: 4
-          }],
-          frameRate: 10
-        });
-        this.anims.create({
-          key: "right",
-          frames: this.anims.generateFrameNumbers("dude", {
-            start: 5,
-            end: 8
-          }),
+          frames: [{ key: "dude", frame: 4 }],
           frameRate: 10,
-          repeat: -1
         });
+          this.anims.create({
+          key: "right",
+          frames: this.anims.generateFrameNumbers("dude", { start: 5, end: 8 }),
+          frameRate: 10,
+          repeat: -1,
+        });*/
       }
     }, {
       key: "update",
@@ -242,6 +234,9 @@ function initializeCode() {
         }
         if (this.cursors.up.isDown && this.dude.body.touching.down) {
           this.dude.body.velocity.y = -gameOptions.dudeGravity / 1.6;
+        }
+        if (this.dude.y > game.config.height || this.dude.y < 0) {
+          this.scene.start("PlayGame");
         }
       }
     }]);
