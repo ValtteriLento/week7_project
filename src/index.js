@@ -42,6 +42,10 @@ function initializeCode() {
   };
 
   class PlayGame extends Phaser.Scene {
+    constructor() {
+      super("PlayGame");
+    }
+
     preload() {
       this.load.image("sky", "assets/sky.png");
       this.load.image("ground", "assets/platform.png");
@@ -76,7 +80,7 @@ function initializeCode() {
 
       this.cursors = this.input.keyboard.createCursorKeys();
 
-      this.anims.create({
+      /*      this.anims.create({
         key: "left",
         frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
         frameRate: 10,
@@ -93,7 +97,7 @@ function initializeCode() {
         frames: this.anims.generateFrameNumbers("dude", { start: 5, end: 8 }),
         frameRate: 10,
         repeat: -1,
-      });
+      });*/
     }
 
     update() {
@@ -110,6 +114,10 @@ function initializeCode() {
 
       if (this.cursors.up.isDown && this.dude.body.touching.down) {
         this.dude.body.velocity.y = -gameOptions.dudeGravity / 1.6;
+      }
+
+      if (this.dude.y > game.config.height || this.dude.y < 0) {
+        this.scene.start("PlayGame");
       }
     }
   }
